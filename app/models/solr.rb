@@ -64,7 +64,7 @@ class Solr
 					 "role_WIN", "role_WIT", "role_WPR", "role_WST",
            "has_pages", "hasPart", "isPartOf", "decade", "quarter_century", "half_century", "century", "subject",
 					 "coverage", "description", "review_date", "edition_date_label",
-					 "edition_year", "edition_decade", "edition_quarter_century", "edition_half_century", "edition_century"
+					 "edition_year", "edition_decade", "edition_quarter_century", "edition_half_century", "edition_century", "typewright"
          ]
          @facet_fields = ['genre','archive','freeculture', 'has_full_text', 'federation', 'typewright', 'doc_type', 'discipline', 'role']
       end
