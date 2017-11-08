@@ -112,6 +112,8 @@ class QueryFormat
         'lang' => { :name => 'Language', :param => :language, :default => nil, :transformation => get_proc(:transform_language)},
         'doc_type' => { :name => 'Format', :param => :string, :default => nil, :transformation => get_proc(:transform_doc_type)},
         'discipline' => { :name => 'Discipline', :param => :string, :default => nil, :transformation => get_proc(:transform_discipline)},
+				'subject' => { :name => 'Subject', :param => :string, :default => nil, :transformation => get_proc(:transform_subject)},
+				'coverage' => { :name => 'Coverage', :param => :string, :default => nil, :transformation => get_proc(:transform_coverage)},
 
 				'role_ABR' => { :name => 'Abridger', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACP' => { :name => 'Art copyist', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
@@ -411,6 +413,8 @@ class QueryFormat
         'lang' => { :name => 'Language', :param => :language, :default => nil, :transformation => get_proc(:transform_language)},
 				'doc_type' => { :name => 'Format', :param => :string, :default => nil, :transformation => get_proc(:transform_doc_type)},
 				'discipline' => { :name => 'Discipline', :param => :string, :default => nil, :transformation => get_proc(:transform_discipline)},
+				'subject' => { :name => 'Subject', :param => :string, :default => nil, :transformation => get_proc(:transform_subject)},
+				'coverage' => { :name => 'Coverage', :param => :string, :default => nil, :transformation => get_proc(:transform_coverage)},
 				'role_ABR' => { :name => 'Abridger', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACP' => { :name => 'Art copyist', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACT' => { :name => 'Actor', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
@@ -702,6 +706,8 @@ class QueryFormat
         'lang' => { :name => 'Language', :param => :language, :default => nil, :transformation => get_proc(:transform_language)},
 				'doc_type' => { :name => 'Format', :param => :string, :default => nil, :transformation => get_proc(:transform_doc_type)},
         'discipline' => { :name => 'Discipline', :param => :string, :default => nil, :transformation => get_proc(:transform_discipline)},
+				'subject' => { :name => 'Subject', :param => :string, :default => nil, :transformation => get_proc(:transform_subject)},
+				'coverage' => { :name => 'Coverage', :param => :string, :default => nil, :transformation => get_proc(:transform_coverage)},
 				'role_ABR' => { :name => 'Abridger', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACP' => { :name => 'Art copyist', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACT' => { :name => 'Actor', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
@@ -1443,6 +1449,14 @@ class QueryFormat
 
 	def self.transform_group(key, val)
 		return { 'q' => "group_id:#{val}" }
+	end
+
+	def self.transform_subject(key, val)
+		return { 'fq' => self.insert_field_name(key, val) }
+	end
+
+	def self.transform_coverage(key, val)
+		return { 'fq' => self.insert_field_name(key, val) }
 	end
 
 	def self.create_solr_query(format, params, request_ip)
