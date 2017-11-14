@@ -114,6 +114,7 @@ class QueryFormat
         'discipline' => { :name => 'Discipline', :param => :string, :default => nil, :transformation => get_proc(:transform_discipline)},
 				'subject' => { :name => 'Subject', :param => :string, :default => nil, :transformation => get_proc(:transform_subject)},
 				'coverage' => { :name => 'Coverage', :param => :string, :default => nil, :transformation => get_proc(:transform_coverage)},
+				'uri' => { :name => 'URI', :param => :uri, :default => nil, :transformation => get_proc(:transform_uri_search) },
 
 				'role_ABR' => { :name => 'Abridger', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACP' => { :name => 'Art copyist', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
@@ -708,6 +709,7 @@ class QueryFormat
         'discipline' => { :name => 'Discipline', :param => :string, :default => nil, :transformation => get_proc(:transform_discipline)},
 				'subject' => { :name => 'Subject', :param => :string, :default => nil, :transformation => get_proc(:transform_subject)},
 				'coverage' => { :name => 'Coverage', :param => :string, :default => nil, :transformation => get_proc(:transform_coverage)},
+				'uri' => { :name => 'URI', :param => :uri, :default => nil, :transformation => get_proc(:transform_uri_search) },
 				'role_ABR' => { :name => 'Abridger', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACP' => { :name => 'Art copyist', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACT' => { :name => 'Actor', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
@@ -1000,6 +1002,7 @@ class QueryFormat
 	def self.details_format()
 		format = {
 				'uri' => { :name => 'URI', :param => :uri, :default => nil, :transformation => get_proc(:transform_uri) },
+				'o' => { :name => 'Other Facet', :param => :other_facet, :default => nil, :transformation => get_proc(:transform_other) },
 				'test_index' => { :name => 'Use Testing Index', :param => :boolean, :default => nil, :transformation => get_proc(:transform_nil) }
 		}
 		return self.add_to_format(format)
@@ -1419,6 +1422,12 @@ class QueryFormat
 		val = "\"#{val}\"" if val.include?(' ')
 		val = val.gsub("&amp;", "&")
 		return { 'q' => "uri:#{val}" }
+	end
+
+	def self.transform_uri_search(key,val)
+		val = "\"#{val}\"" if val.include?(' ')
+		val = val.gsub("&amp;", "&")
+		return { 'q' => insert_field_name(key,val) }
 	end
 
 	def self.transform_section(key, val)
