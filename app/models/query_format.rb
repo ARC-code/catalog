@@ -114,6 +114,9 @@ class QueryFormat
         'discipline' => { :name => 'Discipline', :param => :string, :default => nil, :transformation => get_proc(:transform_discipline)},
 				'subject' => { :name => 'Subject', :param => :string, :default => nil, :transformation => get_proc(:transform_subject)},
 				'coverage' => { :name => 'Coverage', :param => :string, :default => nil, :transformation => get_proc(:transform_coverage)},
+				'publication_country' => { :name => 'Place of Publication: Country', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'publication_state' => { :name => 'Place of Publication: State', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'publication_city' => { :name => 'Place of Publication: City', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
 				'uri' => { :name => 'URI', :param => :uri, :default => nil, :transformation => get_proc(:transform_uri_search) },
 
 				'role_ABR' => { :name => 'Abridger', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
@@ -416,6 +419,9 @@ class QueryFormat
 				'discipline' => { :name => 'Discipline', :param => :string, :default => nil, :transformation => get_proc(:transform_discipline)},
 				'subject' => { :name => 'Subject', :param => :string, :default => nil, :transformation => get_proc(:transform_subject)},
 				'coverage' => { :name => 'Coverage', :param => :string, :default => nil, :transformation => get_proc(:transform_coverage)},
+        'publication_country' => { :name => 'Place of Publication: Country', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'publication_state' => { :name => 'Place of Publication: State', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'publication_city' => { :name => 'Place of Publication: City', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
 				'role_ABR' => { :name => 'Abridger', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACP' => { :name => 'Art copyist', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACT' => { :name => 'Actor', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
@@ -709,6 +715,9 @@ class QueryFormat
         'discipline' => { :name => 'Discipline', :param => :string, :default => nil, :transformation => get_proc(:transform_discipline)},
 				'subject' => { :name => 'Subject', :param => :string, :default => nil, :transformation => get_proc(:transform_subject)},
 				'coverage' => { :name => 'Coverage', :param => :string, :default => nil, :transformation => get_proc(:transform_coverage)},
+        'publication_country' => { :name => 'Place of Publication: Country', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'publication_state' => { :name => 'Place of Publication: State', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'publication_city' => { :name => 'Place of Publication: City', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
 				'uri' => { :name => 'URI', :param => :uri, :default => nil, :transformation => get_proc(:transform_uri_search) },
 				'role_ABR' => { :name => 'Abridger', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACP' => { :name => 'Art copyist', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
@@ -1465,6 +1474,10 @@ class QueryFormat
 	end
 
 	def self.transform_coverage(key, val)
+		return { 'fq' => self.insert_field_name(key, val) }
+	end
+
+	def self.transform_place_of_publication(key, val)
 		return { 'fq' => self.insert_field_name(key, val) }
 	end
 
