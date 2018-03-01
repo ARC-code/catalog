@@ -18,7 +18,7 @@ lock '3.4.0'
 
 set :repo_url, site_specific['repository']
 
-set :branch, "aks/permalink"
+set :branch, "master"
 set :stages, ["staging", "production"]
 # Default value for :linked_files is []
 set :linked_files, %w{config/database.yml config/secrets.yml}

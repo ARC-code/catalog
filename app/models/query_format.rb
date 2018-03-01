@@ -37,7 +37,7 @@ class QueryFormat
 		verifications = {
 			:term => { :exp => /^([+\-]("#{w}( #{w})*"|#{w}))+$/u, :friendly => "A list of alphanumeric terms, starting with either + or - and possibly quoted if there is a space." },
 			:frag => { :exp => /^("#{w}( #{w})*"|#{w})$/u, :friendly => "A list of alphanumeric terms, possibly quoted if there is a space." },
-      :year => { :exp => /^([+\-]\d{1,4}(\s+[tT][oO]\s+\d{1,4})?)$/, :friendly => "[+-] A 1 to 4 digit date." },
+      :year => { :exp => /^([+\-](\d{1,4}|\*)(\s+[tT][oO]\s+(\d{1,4}|NOW))?)$/, :friendly => "[+-] A 1 to 4 digit date." },
 			:archive => { :exp => /^([+\-]\w[\w\- ]*)$/, :friendly => "[+-] One of the predefined archive abbreviations." },
 			:genre => { :exp => /^([+\-]\w[ \w,]*)+$/, :friendly => "[+-] One or more of the predefined genres." },
 			:genre2 => { :exp => /^(\w[ \w,]*)+(;(\w[ \w,]*)+)*$/, :friendly => "One or more of the predefined genres separated by semicolons." },
