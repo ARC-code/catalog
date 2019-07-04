@@ -56,7 +56,7 @@ class ExhibitsController < ApplicationController
 			render_error("Must call this through the web service", :forbidden)
 		else
 			federation = Federation.find_by({ name: params[:federation] })
-			ip = request.headers['REMOTE_ADDR']
+			ip = request.headers['HTTP_X_FORWARD_FOR']
 			if federation && ip == federation.ip
 				begin
 					is_test = Rails.env == 'test' ? :test : :live
@@ -97,7 +97,7 @@ class ExhibitsController < ApplicationController
 			render_error("Must call this through the web service", :forbidden)
 		else
 			federation = Federation.find_by({ name: params[:federation] })
-			ip = request.headers['REMOTE_ADDR']
+			ip = request.headers['HTTP_X_FORWARD_FOR']
 			if federation && ip == federation.ip
 				begin
 					query_params = QueryFormat.exhibit_format()
@@ -173,7 +173,7 @@ class ExhibitsController < ApplicationController
 			render_error("Must call this through the web service", :forbidden)
 		else
 			federation = Federation.find_by({ name: params[:federation] })
-			ip = request.headers['REMOTE_ADDR']
+			ip = request.headers['HTTP_X_FORWARD_FOR']
 			if federation && ip == federation.ip
 				begin
 					commit = params[:commit] == 'immediate'
