@@ -5,7 +5,7 @@ class LocalsController < ApplicationController
 	# Since it is so hard to test these calls with capybara, there are a couple fake calls that are just gets.
 	# They are only available from localhost, so it isn't a security hole.
 	def test_search_good()
-		if	request.headers['REMOTE_ADDR'] == '127.0.0.1'
+		if	request.headers['HTTP_X_FORWARD_FOR'] == '127.0.0.1'
 			federation = Federation.find_by({ name: params[:federation] })
 			if federation
 				request.env['REMOTE_ADDR'] = federation.ip
@@ -15,7 +15,7 @@ class LocalsController < ApplicationController
 	end
 
 	def test_search_bad()
-		if	request.headers['REMOTE_ADDR'] == '127.0.0.1'
+		if	request.headers['HTTP_X_FORWARD_FOR'] == '127.0.0.1'
 			index()
 		end
 	end
@@ -40,7 +40,7 @@ class LocalsController < ApplicationController
 	# GET /locals.xml
 	def index
 		federation = Federation.find_by({ name: params[:federation] })
-		ip = request.headers['REMOTE_ADDR']
+		ip = request.headers['HTTP_X_FORWARD_FOR']
 		if federation && ip == federation.ip
 			begin
 				query_params = QueryFormat.locals_format()
@@ -114,7 +114,7 @@ class LocalsController < ApplicationController
 	# POST /locals.xml
 	def create
 		federation = Federation.find_by({ name: params[:federation] })
-		ip = request.headers['REMOTE_ADDR']
+		ip = request.headers['HTTP_X_FORWARD_FOR']
 		if federation && ip == federation.ip
 			begin
 				query_params = QueryFormat.add_locals_format()
@@ -155,7 +155,7 @@ class LocalsController < ApplicationController
 	# PUT /locals/1.xml
 	def update
 		federation = Federation.find_by({ name: params[:id] })
-		ip = request.headers['REMOTE_ADDR']
+		ip = request.headers['HTTP_X_FORWARD_FOR']
 		if federation && ip == federation.ip
 			begin
 				is_test = Rails.env == 'test' ? :test : :live
@@ -184,7 +184,7 @@ class LocalsController < ApplicationController
 	# DELETE /locals/1.xml
 	def destroy
 		federation = Federation.find_by({ name: params[:id] })
-		ip = request.headers['REMOTE_ADDR']
+		ip = request.headers['HTTP_X_FORWARD_FOR']
 		if federation && ip == federation.ip
 			begin
 				is_test = Rails.env == 'test' ? :test : :live

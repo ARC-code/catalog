@@ -18,7 +18,7 @@ class ExhibitsController < ApplicationController
 	# Since it is so hard to test these calls with capybara, there are a couple fake calls that are just gets.
 	# They are only available from localhost, so it isn't a security hole.
 	def test_create_good()
-		if	request.headers['REMOTE_ADDR'] == '127.0.0.1'
+		if	request.headers['HTTP_X_FORWARD_FOR'] == '127.0.0.1'
 			federation = Federation.find_by({ name: params[:federation] })
 			if federation
 				request.env['REMOTE_ADDR'] = federation.ip
@@ -28,13 +28,13 @@ class ExhibitsController < ApplicationController
 	end
 
 	def test_create_bad()
-		if	request.headers['REMOTE_ADDR'] == '127.0.0.1'
+		if	request.headers['HTTP_X_FORWARD_FOR'] == '127.0.0.1'
 			create()
 		end
 	end
 
 	def test_destroy_good()
-		if	request.headers['REMOTE_ADDR'] == '127.0.0.1'
+		if	request.headers['HTTP_X_FORWARD_FOR'] == '127.0.0.1'
 			federation = Federation.find_by({ name: params[:federation] })
 			if federation
 				request.env['REMOTE_ADDR'] = federation.ip
@@ -44,7 +44,7 @@ class ExhibitsController < ApplicationController
 	end
 
 	def test_destroy_bad()
-		if	request.headers['REMOTE_ADDR'] == '127.0.0.1'
+		if	request.headers['HTTP_X_FORWARD_FOR'] == '127.0.0.1'
 			destroy()
 		end
 	end

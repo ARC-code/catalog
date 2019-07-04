@@ -81,7 +81,7 @@ class DocumentsController < ApplicationController
   end
 
   def check_ip
-    ip = request.headers['REMOTE_ADDR']
+    ip = request.headers['HTTP_X_FORWARD_FOR']
     return ip == ALLOWED_IP
 
   end
