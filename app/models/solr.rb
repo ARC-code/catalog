@@ -71,7 +71,7 @@ class Solr
    end
 
    def self.factory_create(is_test, federation="")
-		 logger.info "creating factory..."
+		 ActiveRecord::Base.logger.info("creating factory...")
       name = ""
       if federation == ""
          if is_test == :test
@@ -614,7 +614,7 @@ class Solr
 	end
 
 	def clear_core()
-		logger.info "clearing core..."
+		ActiveRecord::Base.logger.info("clearing core...")
 		if @core.include?("LocalContent")
 			@solr.delete_by_query "*:*"
 		else
