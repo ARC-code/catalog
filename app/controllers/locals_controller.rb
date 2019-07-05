@@ -188,6 +188,8 @@ class LocalsController < ApplicationController
 	# DELETE /locals/1.xml
 	def destroy
 		federation = Federation.find_by({ name: params[:id] })
+		logger.info "destroying:"
+		logger.info federation
 		ip = request.headers['HTTP_X_FORWARD_FOR']
 		if federation && ip == federation.ip
 			begin
