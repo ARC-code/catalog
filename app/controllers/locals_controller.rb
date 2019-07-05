@@ -52,7 +52,10 @@ class LocalsController < ApplicationController
 				is_test = Rails.env == 'test' ? :test : :live
 				solr = Solr.factory_create(is_test, federation.name)
 				logging.error solr.class
+
 				@results = solr.search(query, { :field_list => [ 'key', 'title', 'object_type', 'object_id', 'last_modified' ], :key_field => 'key', :no_facets => true })
+				logging.error @results
+
 				if params[:object_type]
 					# now do the same search as if there were no query, just to get the total
 					params.delete(:object_type)
