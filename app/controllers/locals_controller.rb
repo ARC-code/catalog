@@ -42,6 +42,7 @@ class LocalsController < ApplicationController
 		federation = Federation.find_by({ name: params[:federation] })
 		ip = request.headers['HTTP_X_FORWARD_FOR']
 		if federation && ip == federation.ip
+			logging.info "request authenticated."
 			begin
 				query_params = QueryFormat.locals_format()
 				QueryFormat.transform_raw_parameters(params)
