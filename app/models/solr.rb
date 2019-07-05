@@ -620,6 +620,7 @@ class Solr
 		else
 			raise SolrException.new("Cannot clear the core #{@core}")
 		end
+		ActiveRecord::Base.logger.info("core cleared successfully...")
 	end
 
 	def commit()
