@@ -42,7 +42,7 @@ class LocalsController < ApplicationController
 		federation = Federation.find_by({ name: params[:federation] })
 		ip = request.headers['HTTP_X_FORWARD_FOR']
 		if federation && ip == federation.ip
-			logging.info "request authenticated."
+			logger.info "request authenticated."
 			begin
 				query_params = QueryFormat.locals_format()
 				QueryFormat.transform_raw_parameters(params)
@@ -52,10 +52,10 @@ class LocalsController < ApplicationController
 
 				is_test = Rails.env == 'test' ? :test : :live
 				solr = Solr.factory_create(is_test, federation.name)
-				logging.error solr.class
+				logger.error solr.class
 
 				@results = solr.search(query, { :field_list => [ 'key', 'title', 'object_type', 'object_id', 'last_modified' ], :key_field => 'key', :no_facets => true })
-				logging.error @results
+				logger.error @results
 
 				if params[:object_type]
 					# now do the same search as if there were no query, just to get the total
