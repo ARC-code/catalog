@@ -207,7 +207,7 @@ class LocalsController < ApplicationController
 				render_error(e.to_s, e.status())
 			rescue Exception => e
 				ExceptionNotifier.notify_exception(e, :env => request.env)
-				render_error("Something unexpected went wrong.", :internal_server_error)
+				render_error("Something unexpected went wrong in locals_controller:destroy.", :internal_server_error)
 			end
 		else
 			render_error("You do not have permission to do this.", :unauthorized)
