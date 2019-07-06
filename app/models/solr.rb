@@ -63,7 +63,7 @@ class Solr
 					 "role_TYD", "role_TYG", "role_UVP", "role_VAC", "role_VDG", "role_WAC", "role_WAL", "role_WAM", "role_WAT", "role_WDC", "role_WDE",
 					 "role_WIN", "role_WIT", "role_WPR", "role_WST",
            "has_pages", "hasPart", "isPartOf", "decade", "quarter_century", "half_century", "century", "subject",
-					 "coverage", "description", "review_date", "edition_date_label",
+					 "coverage", "publication_country", "publication_state", "publication_city", "description", "review_date", "edition_date_label",
 					 "edition_year", "edition_decade", "edition_quarter_century", "edition_half_century", "edition_century", "typewright"
          ]
          @facet_fields = ['genre','archive','freeculture', 'has_full_text', 'federation', 'typewright', 'doc_type', 'discipline', 'role']
@@ -71,6 +71,7 @@ class Solr
    end
 
    def self.factory_create(is_test, federation="")
+		 ActiveRecord::Base.logger.info("creating factory...")
       name = ""
       if federation == ""
          if is_test == :test
@@ -613,11 +614,13 @@ class Solr
 	end
 
 	def clear_core()
+		ActiveRecord::Base.logger.info("clearing core...")
 		if @core.include?("LocalContent")
 			@solr.delete_by_query "*:*"
 		else
 			raise SolrException.new("Cannot clear the core #{@core}")
 		end
+		ActiveRecord::Base.logger.info("core cleared successfully...")
 	end
 
 	def commit()

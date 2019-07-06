@@ -42,6 +42,7 @@ class LocalsController < ApplicationController
 		federation = Federation.find_by({ name: params[:federation] })
 		ip = request.headers['HTTP_X_FORWARD_FOR']
 		if federation && ip == federation.ip
+			logger.info "request authenticated."
 			begin
 				query_params = QueryFormat.locals_format()
 				QueryFormat.transform_raw_parameters(params)
@@ -51,8 +52,11 @@ class LocalsController < ApplicationController
 
 				is_test = Rails.env == 'test' ? :test : :live
 				solr = Solr.factory_create(is_test, federation.name)
+				logger.error solr.class
 
 				@results = solr.search(query, { :field_list => [ 'key', 'title', 'object_type', 'object_id', 'last_modified' ], :key_field => 'key', :no_facets => true })
+				logger.error @results
+
 				if params[:object_type]
 					# now do the same search as if there were no query, just to get the total
 					params.delete(:object_type)
@@ -184,6 +188,8 @@ class LocalsController < ApplicationController
 	# DELETE /locals/1.xml
 	def destroy
 		federation = Federation.find_by({ name: params[:id] })
+		logger.info "destroying:"
+		logger.info federation
 		ip = request.headers['HTTP_X_FORWARD_FOR']
 		if federation && ip == federation.ip
 			begin
@@ -201,7 +207,7 @@ class LocalsController < ApplicationController
 				render_error(e.to_s, e.status())
 			rescue Exception => e
 				ExceptionNotifier.notify_exception(e, :env => request.env)
-				render_error("Something unexpected went wrong.", :internal_server_error)
+				render_error("Something unexpected went wrong in locals_controller:destroy.", :internal_server_error)
 			end
 		else
 			render_error("You do not have permission to do this.", :unauthorized)
