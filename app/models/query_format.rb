@@ -37,7 +37,7 @@ class QueryFormat
 		verifications = {
 			:term => { :exp => /^([+\-]("#{w}( #{w})*"|#{w}))+$/u, :friendly => "A list of alphanumeric terms, starting with either + or - and possibly quoted if there is a space." },
 			:frag => { :exp => /^("#{w}( #{w})*"|#{w})$/u, :friendly => "A list of alphanumeric terms, possibly quoted if there is a space." },
-      :year => { :exp => /^([+\-]\d{1,4}(\s+[tT][oO]\s+\d{1,4})?)$/, :friendly => "[+-] A 1 to 4 digit date." },
+      :year => { :exp => /^([+\-](\d{1,4}|\*)(\s+[tT][oO]\s+(\d{1,4}|NOW))?)$/, :friendly => "[+-] A 1 to 4 digit date." },
 			:archive => { :exp => /^([+\-]\w[\w\- ]*)$/, :friendly => "[+-] One of the predefined archive abbreviations." },
 			:genre => { :exp => /^([+\-]\w[ \w,]*)+$/, :friendly => "[+-] One or more of the predefined genres." },
 			:genre2 => { :exp => /^(\w[ \w,]*)+(;(\w[ \w,]*)+)*$/, :friendly => "One or more of the predefined genres separated by semicolons." },
@@ -114,6 +114,10 @@ class QueryFormat
         'discipline' => { :name => 'Discipline', :param => :string, :default => nil, :transformation => get_proc(:transform_discipline)},
 				'subject' => { :name => 'Subject', :param => :string, :default => nil, :transformation => get_proc(:transform_subject)},
 				'coverage' => { :name => 'Coverage', :param => :string, :default => nil, :transformation => get_proc(:transform_coverage)},
+				'publication_country' => { :name => 'Place of Publication: Country', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'publication_state' => { :name => 'Place of Publication: State', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'publication_city' => { :name => 'Place of Publication: City', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'uri' => { :name => 'URI', :param => :uri, :default => nil, :transformation => get_proc(:transform_uri_search) },
 
 				'role_ABR' => { :name => 'Abridger', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACP' => { :name => 'Art copyist', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
@@ -415,6 +419,9 @@ class QueryFormat
 				'discipline' => { :name => 'Discipline', :param => :string, :default => nil, :transformation => get_proc(:transform_discipline)},
 				'subject' => { :name => 'Subject', :param => :string, :default => nil, :transformation => get_proc(:transform_subject)},
 				'coverage' => { :name => 'Coverage', :param => :string, :default => nil, :transformation => get_proc(:transform_coverage)},
+        'publication_country' => { :name => 'Place of Publication: Country', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'publication_state' => { :name => 'Place of Publication: State', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'publication_city' => { :name => 'Place of Publication: City', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
 				'role_ABR' => { :name => 'Abridger', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACP' => { :name => 'Art copyist', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACT' => { :name => 'Actor', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
@@ -708,6 +715,10 @@ class QueryFormat
         'discipline' => { :name => 'Discipline', :param => :string, :default => nil, :transformation => get_proc(:transform_discipline)},
 				'subject' => { :name => 'Subject', :param => :string, :default => nil, :transformation => get_proc(:transform_subject)},
 				'coverage' => { :name => 'Coverage', :param => :string, :default => nil, :transformation => get_proc(:transform_coverage)},
+        'publication_country' => { :name => 'Place of Publication: Country', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'publication_state' => { :name => 'Place of Publication: State', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'publication_city' => { :name => 'Place of Publication: City', :param => :string, :default => nil, :transformation => get_proc(:transform_place_of_publication)},
+				'uri' => { :name => 'URI', :param => :uri, :default => nil, :transformation => get_proc(:transform_uri_search) },
 				'role_ABR' => { :name => 'Abridger', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACP' => { :name => 'Art copyist', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
 				'role_ACT' => { :name => 'Actor', :param => :string, :default => nil, :transformation => get_proc(:transform_role_generic)},
@@ -1000,6 +1011,7 @@ class QueryFormat
 	def self.details_format()
 		format = {
 				'uri' => { :name => 'URI', :param => :uri, :default => nil, :transformation => get_proc(:transform_uri) },
+				'o' => { :name => 'Other Facet', :param => :other_facet, :default => nil, :transformation => get_proc(:transform_other) },
 				'test_index' => { :name => 'Use Testing Index', :param => :boolean, :default => nil, :transformation => get_proc(:transform_nil) }
 		}
 		return self.add_to_format(format)
@@ -1421,6 +1433,12 @@ class QueryFormat
 		return { 'q' => "uri:#{val}" }
 	end
 
+	def self.transform_uri_search(key,val)
+		val = "\"#{val}\"" if val.include?(' ')
+		val = val.gsub("&amp;", "&")
+		return { 'q' => insert_field_name(key,val) }
+	end
+
 	def self.transform_section(key, val)
 		return { 'fq' => "section:#{val}" }
 	end
@@ -1456,6 +1474,10 @@ class QueryFormat
 	end
 
 	def self.transform_coverage(key, val)
+		return { 'fq' => self.insert_field_name(key, val) }
+	end
+
+	def self.transform_place_of_publication(key, val)
 		return { 'fq' => self.insert_field_name(key, val) }
 	end
 
